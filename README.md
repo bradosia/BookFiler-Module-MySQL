@@ -1,20 +1,20 @@
-# File Tree Pane Widget Module
-QT5 Widget
+# BookFiler Module - MySQL
+Module containg MySQL connectivity, SQLite3, and HTTP.
 
-# Project Organization
-Top Level
-* Plugin
-  * The plugin controller
-* Interface.cpp
-  * The plugin interface that is meant to be included by the user application
-* /UI/
-  * All user interface code or anything that uses QT
-  * In an Model-View-Controller (MVC) design this is the View
-* /core/
-  * All non-user interface code. Does not include QT.
-  * Although QT includes non-UI features, the entire QT framework is considered as UI since the non-UI features would not be seperable in case the UI framework was changed to another framework.
-  * In an Model-View-Controller (MVC) design this is the Model
+## Implementation
 
+| Technology | Library |
+|:-- |:-- |
+| MySQL Client | libmariadbclient |
+| SQLite3 | sqlite3 |
+| HTTP Client | curl |
+
+# Build
+
+## mingw64
+```cpp
+pacman -S mingw-w64-x86_64-curl
+```
 
 # Coding Practices
 * header guards are all caps and use underscore spacing
