@@ -13,7 +13,7 @@ Module containg MySQL connectivity, SQLite3, and HTTP.
 
 ## mingw64
 ```cpp
-pacman -S mingw-w64-x86_64-curl
+pacman -S mingw-w64-x86_64-curl pacman -S mingw-w64-x86_64-libgit2
 ```
 
 # Coding Practices
