@@ -17,6 +17,7 @@ namespace MySQL {
 
 int walk_repo(std::string repoPath) {
   int error;
+  int depth = -1;
 
   git_libgit2_init();
   git_repository *repo = NULL;
@@ -42,10 +43,18 @@ int walk_repo(std::string repoPath) {
   git_revwalk_push_head(walk);
   git_revwalk_hide_glob(walk, "tags/*");
 
-  git_object *obj;
-  git_revparse_single(&obj, repo, "HEAD~2");
-  git_revwalk_hide(walk, git_object_id(obj));
-  git_object_free(obj);
+  /* limits depth */
+  if (depth > 0) {
+    git_object *obj;
+    error = git_revparse_single(&obj, repo, "HEAD~4"); // depth of 4
+    if (error < 0) {
+      const git_error *e = git_error_last();
+      printf("Error %d/%d: %s\n", error, e->klass, e->message);
+      return error;
+    }
+    git_revwalk_hide(walk, git_object_id(obj));
+    git_object_free(obj);
+  }
 
   git_oid oid;
   while (git_revwalk_next(&oid, walk) == 0) {
@@ -54,8 +63,8 @@ int walk_repo(std::string repoPath) {
 
     git_commit_lookup(&c, repo, &oid);
     git_oid_tostr(oidstr, 9, &oid);
-    printf("%s\n%s\n\n", oidstr, git_commit_message(c));
-
+    std::cout << "Commit id: " << oidstr
+              << ", Message: " << git_commit_message(c) << std::endl;
     git_commit_free(c);
   }
 
