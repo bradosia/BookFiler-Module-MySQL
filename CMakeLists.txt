@@ -1,24 +1,43 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.4)
 
 set(PROJECT_NAME BookFiler-Module-MySQL)
 project(${PROJECT_NAME} VERSION 1.0.0 LANGUAGES CXX)
 set(RELEASE_DIR "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/")
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${RELEASE_DIR})
 
+option(BUILD_SHARED_LIBS "Build shared library" ON)
+option(BUILD_STATIC_LIBS "Build static library" OFF)
+option(BUILD_TESTS "Build test executables" OFF)
+
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.10")
+
+find_package(Boost 1.56 REQUIRED COMPONENTS
+             system filesystem)
+
+include_directories(
+  include
+  third_party/rapidjson/include
+)
 
 # Set up source files
 set(SOURCES
   src/Module.cpp
-  src/core/http_curl.cpp
+  src/core/httpCurl.cpp
+  src/core/git.cpp
+  src/core/mySQL.cpp
 )
 
 set(HEADERS
   src/Module.hpp
   src/core/config.hpp
-  src/core/http_curl.hpp
+  src/core/httpCurl.hpp
+  src/core/git.hpp
+  src/core/mySQL.hpp
 
-  include/BookFiler-Module-Filesystem-Database/Interface.hpp
+  include/BookFiler-Module-MySQL/Interface.hpp
 )
 
 set(SHARED_COMPILE_DEFINITIONS
@@ -42,7 +61,6 @@ set(LIBRARIES ${LIBRARIES}
   nghttp2
   psl.dll
   idn2
-  gnutls
   ssl
   crypto
   cares
@@ -55,6 +73,9 @@ set(LIBRARIES ${LIBRARIES}
   libz
   bcrypt
   crypt32
+
+  # git2
+  git2
 )
 
 if(WIN32)
@@ -70,43 +91,20 @@ endif()
 set(SHARED_LINK_LIBRARIES ${LIBRARIES})
 set(STATIC_LINK_LIBRARIES ${LIBRARIES})
 
-set(CMAKE_CXX_STANDARD 17)
-
-# TESTS
-add_subdirectory(src/test/mysql-connect)
-
-# Set up library names
-if(BUILD_SHARED_LIBS)
-  set(lib_shared_name ${PROJECT_NAME}LibShared)
-  set(lib_shared_name_decorated ${lib_shared_name}${JKQtPlotter_LIBNAME_ADDITION})
-  set(${PROJECT_NAME}_SHARED_LIBRARY ${lib_shared_name_decorated}  CACHE STRING "name of static library for ${PROJECT_NAME}" FORCE)
-  message( STATUS "-- Building ${lib_shared_name}" )
-endif(BUILD_SHARED_LIBS)
-
-if(BUILD_STATIC_LIBS)
-  set(lib_name ${PROJECT_NAME}Lib)
-  set(lib_name_decorated ${lib_name}${JKQtPlotter_LIBNAME_ADDITION})
-  set(${PROJECT_NAME}_STATIC_LIBRARY ${lib_name_decorated}  CACHE STRING "name of static library for ${PROJECT_NAME}" FORCE)
-  message( STATUS "-- Building ${lib_name}" )
-endif(BUILD_STATIC_LIBS)
-
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+#set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 include(CMakePackageConfigHelpers)
 
 if(BUILD_SHARED_LIBS)
+  set(lib_shared_name ${PROJECT_NAME}-LibShared)
+  message( STATUS "-- Building ${lib_shared_name}" )
   add_library(${lib_shared_name} SHARED  ${SOURCES} ${HEADERS})
-  target_compile_features(${lib_shared_name} PUBLIC cxx_std_17)
   set_property(TARGET ${lib_shared_name} PROPERTY VERSION "${PROJECT_VERSION}")
-  set_property(TARGET ${lib_shared_name} PROPERTY OUTPUT_NAME  "${lib_shared_name_decorated}")
   target_include_directories(${lib_shared_name} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
-  set_target_properties(${lib_shared_name} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS "ON")
-  write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${lib_shared_name}Version.cmake
-    VERSION ${PROJECT_VERSION}
-  COMPATIBILITY AnyNewerVersion )
+  #set_target_properties(${lib_shared_name} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS "ON")
 
   # Compile Definitions
   target_compile_definitions(${lib_shared_name} PUBLIC ${SHARED_COMPILE_DEFINITIONS})
@@ -115,23 +113,23 @@ if(BUILD_SHARED_LIBS)
 endif()
 
 if(BUILD_STATIC_LIBS)
+  set(lib_name ${PROJECT_NAME}-Lib)
+  message( STATUS "-- Building ${lib_name}" )
   add_library(${lib_name} STATIC  ${SOURCES} ${HEADERS})
-  target_compile_features(${lib_name} PUBLIC cxx_std_17)
   set_property(TARGET ${lib_name} PROPERTY VERSION "${PROJECT_VERSION}")
-  set_property(TARGET ${lib_name} PROPERTY OUTPUT_NAME  "${lib_name_decorated}")
   target_include_directories(${lib_name} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
-  write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${lib_name}Version.cmake
-    VERSION ${PROJECT_VERSION}
-  COMPATIBILITY AnyNewerVersion )
 
   # Compile Definitions
   target_compile_definitions(${lib_name} PUBLIC ${STATIC_COMPILE_DEFINITIONS})
   # Libraries to link
   target_link_libraries(${lib_name} PUBLIC ${STATIC_LINK_LIBRARIES})
 endif()
+
+# TESTS
+add_subdirectory(src/tests/mysql-connect)
 
 # Post build
 if(BUILD_SHARED_LIBS)
@@ -162,6 +160,3 @@ endif(BUILD_STATIC_LIBS)
 install(FILES ${HEADERS}
   DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/headers"
 COMPONENT Headers)
-
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${lib_name}_Readme.txt" DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/doc/")
-install(FILES "${CMAKE_SOURCE_DIR}/LICENSE" DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/doc/" RENAME "${lib_name}_LICENSE.txt" )

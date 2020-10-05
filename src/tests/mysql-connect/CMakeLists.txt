@@ -1,11 +1,25 @@
-set(EXENAME ucdavis-3D-electricity-map)
+set(EXENAME mysql-connect)
 
-set(SOURCES ${SOURCES}
+set(SOURCES_SUB ${SOURCES_SUB}
   main.cpp
 )
 
-add_executable(${EXENAME} ${SOURCES})
+set(HEADERS_SUB
+  src/Module.hpp
+  src/core/config.hpp
+  src/core/http_curl.hpp
+
+  include/BookFiler-Module-Filesystem-Database/Interface.hpp
+)
+
+include_directories(
+    ../../
+    ../../../include
+    ../../../third_party/rapidjson/include
+)
+
+add_executable(${EXENAME} ${SOURCES_SUB})
 
 target_link_libraries(${EXENAME} PRIVATE
-  BookFiler_Module_MySQL
+  ${lib_shared_name}
 )

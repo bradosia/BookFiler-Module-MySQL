@@ -1,34 +1,27 @@
 /*
- * @name UC Davis 3D Analyzer
- * @author Brad Lee & SiYi Meng
- * @version 1.01
- * @license GNU LGPL v3
- * @brief 3D map of UC Davis electricity usage
- *
- * QT and OCC integration:
- * Copyright (c) 2018 Shing Liu (eryar@163.com)
- * License: MIT
- * Source: https://github.com/eryar/occQt
- *
- * Data from OSIsoft and UC Davis
- * Icons and images owned by their respective owners
+ * @name BookFiler Module - MySQL
+ * @author Branden Lee
+ * @version 1.00
+ * @license MIT
+ * @brief mySQL, SQLite3, and HTTP implementation
  */
+
+// Local Project
+#include "httpCurl.hpp"
 
 /*
- * piwebapi-ucdavis 1.0
+ * bookfiler - MySQL
  */
-#include "MainWidget.hpp"
+namespace bookfiler {
+namespace MySQL {
 
-/*
- * UCD3DEM = UC Davis 3D Electricity Map
- */
-namespace UCD3DEM {
-
+#if HTTPS_CURL_ENABLE
 size_t writefunc(void *ptr, size_t size, size_t nmemb, std::string *s) {
   s->append((char *)ptr, size * nmemb);
   return size * nmemb;
 }
 
+#if HTTPS_GET_JSON_ENABLE
 rapidjson::Document HTTPS_GET_JSON(std::string URI) {
   CURL *curl;
   CURLcode res;
@@ -56,7 +49,7 @@ rapidjson::Document HTTPS_GET_JSON(std::string URI) {
      * TODO: Write the SSL Certificate Manager
      */
     // getCertificates(global);
-#ifdef SKIP_PEER_VERIFICATION
+#if CURL_SKIP_PEER_VERIFICATION
     /*
      * If you want to connect to a site who isn't using a certificate that is
      * signed by one of the certs in the CA bundle you have, you can skip the
@@ -70,7 +63,7 @@ rapidjson::Document HTTPS_GET_JSON(std::string URI) {
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 #endif
 
-#ifdef SKIP_HOSTNAME_VERIFICATION
+#if CURL_SKIP_HOSTNAME_VERIFICATION
     /*
      * If the site you're connecting to uses a different host name that what
      * they have mentioned in their server certificate's commonName (or
@@ -91,7 +84,7 @@ rapidjson::Document HTTPS_GET_JSON(std::string URI) {
     if (res != CURLE_OK)
       fprintf(stderr, "curl_easy_perform() failed: %s\n",
               curl_easy_strerror(res));
-#ifdef DEBUG_JSON
+#if HTTPS_GET_JSON_DEBUG
     std::cout << bufferString << std::endl;
 #endif
     /* always cleanup */
@@ -102,6 +95,7 @@ rapidjson::Document HTTPS_GET_JSON(std::string URI) {
 
   return resJSON_Doc;
 }
+#endif
 
 void printJSON_value(const rapidjson::Value &a, unsigned int depth) {
   if (a.IsArray()) {
@@ -182,5 +176,7 @@ void getSettingsFile(std::string settingsFileString,
            settingsFileString.c_str());
   }
 }
+#endif
 
-} // namespace UCD3DEM
+} // namespace MySQL
+} // namespace bookfiler

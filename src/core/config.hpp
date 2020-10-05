@@ -1,19 +1,18 @@
 /*
- * @name Filesystem Database Module
+ * @name BookFiler Module - MySQL
  * @author Branden Lee
  * @version 1.00
- * @license GNU LGPL v3
- * @brief filesystem database and utilities
+ * @license MIT
+ * @brief mySQL, SQLite3, and HTTP implementation
  */
 
-#ifndef FSDB_CONFIG_H
-#define FSDB_CONFIG_H
+#ifndef BOOKFILER_MODULE_MYSQL_CONFIG_H
+#define BOOKFILER_MODULE_MYSQL_CONFIG_H
 
-#define TRAVERSE_DEBUG 1
-#define MODULE_EXPORT_SET_SETTINGS_DEBUG 1
-#define FILESYSTEM_FILE_TABLE_DEBUG 1
-#define FILESYSTEM_FILE_TABLE_TEST_INSERT 1
-#define FILESYSTEM_FILE_TABLE_GET_DATA_DEBUG 1
-#define FILESYSTEM_SIGNAL_DEBUG 1
+#define CURL_SKIP_PEER_VERIFICATION 1
+#define CURL_SKIP_HOSTNAME_VERIFICATION 1
+#define HTTPS_GET_JSON_DEBUG 0
+#define HTTPS_GET_JSON_ENABLE 1
+#define HTTPS_CURL_ENABLE 1
 
-#endif // FSDB_CONFIG_H
+#endif // BOOKFILER_MODULE_MYSQL_CONFIG_H
