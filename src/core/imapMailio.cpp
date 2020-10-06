@@ -7,20 +7,17 @@
  */
 
 // Local Project
-#include "imapCurl.hpp"
+#include "imapMailio.hpp"
 
 /*
  * bookfiler - MySQL
  */
+
 namespace bookfiler {
 namespace IMAP {
-namespace curl {
+namespace mailio {
 
 int getEmails(std::shared_ptr<rapidjson::Document> settingsDoc) {
-  CURL *curl;
-  CURLcode res = CURLE_OK;
-  std::string bufferString;
-
   int port;
   std::string host, username, password, url;
 
@@ -50,47 +47,24 @@ int getEmails(std::shared_ptr<rapidjson::Document> settingsDoc) {
     port = (*settingsDoc)[memberName4].GetInt();
   }
 
-  curl = curl_easy_init();
-  if (curl) {
-    /* Set username and password */
-    curl_easy_setopt(curl, CURLOPT_USERNAME, username.c_str());
-    curl_easy_setopt(curl, CURLOPT_PASSWORD, password.c_str());
-
-    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-
-    /* setup callbacks */
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, bookfiler::curl::writefunc);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &bufferString);
-
-    url = "";
-    url.append("imaps://")
-        .append(host)
-        .append(":")
-        .append(std::to_string(port))
-        .append("/INBOX/;UID=1");
-
-    /* This will fetch message 1 from the user's inbox */
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-
-    /* Perform the fetch */
-    res = curl_easy_perform(curl);
-
-    /* Check for errors */
-    if (res != CURLE_OK)
-      fprintf(stderr, "curl_easy_perform() failed: %s\n",
-              curl_easy_strerror(res));
-
-    std::cout << bufferString << std::endl;
-
-    /* Always cleanup */
-    curl_easy_cleanup(curl);
+  try {
+    // connect to server
+    ::mailio::imaps conn(host, port);
+    // modify to use an existing zoho account
+    conn.authenticate(username, password, ::mailio::imaps::auth_method_t::LOGIN);
+    // query inbox statistics
+    ::mailio::imaps::mailbox_stat_t stat = conn.statistics("inbox");
+    std::cout << "Number of messages in mailbox: " << stat.messages_no
+              << std::endl;
+  } catch (::mailio::imap_error &exc) {
+    std::cout << exc.what() << std::endl;
+  } catch (::mailio::dialog_error &exc) {
+    std::cout << exc.what() << std::endl;
   }
 
-  return (int)res;
+  return 0;
 }
 
-} // namespace curl
+} // namespace mailio
 } // namespace IMAP
 } // namespace bookfiler

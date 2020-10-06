@@ -20,6 +20,11 @@ find_package(Boost 1.56 REQUIRED COMPONENTS
 include_directories(
   include
   third_party/rapidjson/include
+  third_party/mailio/include
+)
+
+link_directories(
+  third_party/mailio/bin
 )
 
 # Set up source files
@@ -29,6 +34,7 @@ set(SOURCES
   src/core/httpCurl.cpp
   src/core/smtpCurl.cpp
   src/core/imapCurl.cpp
+  src/core/imapMailio.cpp
   src/core/git.cpp
   src/core/mySQL.cpp
   src/core/ssh.cpp
@@ -41,6 +47,7 @@ set(HEADERS
   src/core/httpCurl.hpp
   src/core/smtpCurl.hpp
   src/core/imapCurl.hpp
+  src/core/imapMailio.hpp
   src/core/git.hpp
   src/core/mySQL.hpp
   src/core/ssh.hpp
@@ -91,6 +98,9 @@ set(LIBRARIES ${LIBRARIES}
 
   # ssh
   ssh
+
+  # mailio
+  mailio
 )
 
 if(WIN32)
@@ -153,7 +163,8 @@ add_subdirectory(src/tests/git-local-connect)
 add_subdirectory(src/tests/git-remote-connect)
 add_subdirectory(src/tests/smtp-connect)
 add_subdirectory(src/tests/http-connect)
-add_subdirectory(src/tests/imap-connect)
+add_subdirectory(src/tests/imap-curl-connect)
+add_subdirectory(src/tests/imap-mailio-connect)
 
 # Post build
 if(BUILD_SHARED_LIBS)

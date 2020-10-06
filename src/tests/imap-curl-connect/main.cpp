@@ -12,11 +12,11 @@
 // Local Project
 #include "Module.hpp"
 
+std::string testName = "SMTP Connection Test";
+
 std::string readFile(std::fstream &fileStream);
 int readJson(std::string path,
              std::shared_ptr<rapidjson::Document> settingsDoc);
-
-std::string testName = "MySQL Connection Test";
 
 int main() {
   int rc;
@@ -27,18 +27,16 @@ int main() {
   /* Get JSON settings file */
   std::shared_ptr<rapidjson::Document> settingsDoc =
       std::make_shared<rapidjson::Document>();
-  rc = readJson("mysql-connect.json", settingsDoc);
+  rc = readJson("imap-connect.json", settingsDoc);
   if (rc < 0) {
     return 0;
   }
 
-  bookfiler::MySQL::Db db;
-  rc = db.open(settingsDoc);
-  if (rc < 0) {
-    std::cout << "database could not be opened" << std::endl;
-    return 0;
-  }
-  db.tableCreate();
+  curl_global_init(CURL_GLOBAL_DEFAULT);
+
+  bookfiler::IMAP::curl::getEmails(settingsDoc);
+
+  curl_global_cleanup();
 
   std::cout << testName << " END" << std::endl;
   system("pause");

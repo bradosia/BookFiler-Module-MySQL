@@ -42,6 +42,7 @@
 #include "core/git.hpp"
 #include "core/httpCurl.hpp"
 #include "core/imapCurl.hpp"
+#include "core/imapMailio.hpp"
 #include "core/mySQL.hpp"
 #include "core/smtpCurl.hpp"
 

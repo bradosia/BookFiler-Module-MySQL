@@ -6,8 +6,8 @@
  * @brief mySQL, SQLite3, and HTTP implementation
  */
 
-#ifndef BOOKFILER_MODULE_MYSQL_IMAP_H
-#define BOOKFILER_MODULE_MYSQL_IMAP_H
+#ifndef BOOKFILER_MODULE_IMAP_CURL_H
+#define BOOKFILER_MODULE_IMAP_CURL_H
 
 // Local Project
 #include "Curl.hpp"
@@ -17,10 +17,12 @@
  */
 namespace bookfiler {
 namespace IMAP {
+namespace curl {
 
 int getEmails(std::shared_ptr<rapidjson::Document> settings);
 
-} // namespace MySQL
+} // namespace curl
+} // namespace IMAP
 } // namespace bookfiler
 
 #endif

@@ -1,4 +1,4 @@
-set(EXENAME imap-connect)
+set(EXENAME imap-mailio-connect)
 
 set(SOURCES_SUB ${SOURCES_SUB}
   main.cpp
