@@ -6,8 +6,8 @@
  * @brief mySQL, SQLite3, and HTTP implementation
  */
 
-#ifndef BOOKFILER_MODULE_MYSQL_MYSQL_H
-#define BOOKFILER_MODULE_MYSQL_MYSQL_H
+#ifndef BOOKFILER_MODULE_MYSQL_CURL_H
+#define BOOKFILER_MODULE_MYSQL_CURL_H
 
 // config
 #include "config.hpp"
@@ -33,17 +33,13 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
-/* libmariadbclient
- * Version: 3.1.7-2
- * License: LGPL
+/*
+ * CURL 7.68.0
+ * License: MIT/X inspired
  */
-#include <mariadb/mysql.h>
-
-/* libssh
- * Version: 0.9.4-1
- * License: LGPL
- */
-#include <libssh/libssh.h>
+#define CURL_STATICLIB
+#include <brotli/decode.h>
+#include <curl/curl.h>
 
 /*
  * bookfiler - MySQL
@@ -51,11 +47,13 @@
 namespace bookfiler {
 namespace MySQL {
 
-int ssh_tunnel(int localPort, std::string remoteHost, int remotePort);
-int create_db(std::string repoPath, rapidjson::Document settings);
+/* Writes data from HTTP request into a string buffer
+ * @param ptr data address
+ */
+size_t writefunc(void *ptr, size_t size, size_t nmemb, std::string *s);
 
 } // namespace MySQL
 } // namespace bookfiler
 
 #endif
-// end BOOKFILER_MODULE_MYSQL_MYSQL_H
+// end BOOKFILER_MODULE_MYSQL_HTTP_H

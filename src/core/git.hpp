@@ -22,6 +22,17 @@
 #include <unordered_map>
 #include <utility>
 
+/* rapidjson v1.1 (2016-8-25)
+ * Developed by Tencent
+ * License: MITs
+ */
+#include <rapidjson/document.h>
+#include <rapidjson/filewritestream.h>
+#include <rapidjson/ostreamwrapper.h>
+#include <rapidjson/reader.h> // rapidjson::ParseResult
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
+
 /* libgit2
  * License: GPL2
  */

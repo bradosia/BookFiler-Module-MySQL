@@ -37,19 +37,13 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
-/*
- * CURL 7.68.0
- * License: MIT/X inspired
- */
-#define CURL_STATICLIB
-#include <brotli/decode.h>
-#include <curl/curl.h>
-
 // Local Project
 #include "BookFiler-Module-MySQL/Interface.hpp"
 #include "core/git.hpp"
 #include "core/httpCurl.hpp"
+#include "core/imapCurl.hpp"
 #include "core/mySQL.hpp"
+#include "core/smtpCurl.hpp"
 
 /*
  * bookfiler - MySQL
@@ -64,9 +58,7 @@ std::string moduleName = "BookFiler Module MySQL";
  * This is the controller, the view is a QT widget, and the model is the API
  * storage
  */
-class ModuleExport
-//: public ModuleInterface
-{
+class ModuleExport : public ModuleInterface {
 public:
   ModuleExport(){};
   ~ModuleExport(){};

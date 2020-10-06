@@ -16,10 +16,6 @@ namespace bookfiler {
 namespace MySQL {
 
 #if HTTPS_CURL_ENABLE
-size_t writefunc(void *ptr, size_t size, size_t nmemb, std::string *s) {
-  s->append((char *)ptr, size * nmemb);
-  return size * nmemb;
-}
 
 #if HTTPS_GET_JSON_ENABLE
 rapidjson::Document HTTPS_GET_JSON(std::string URI) {

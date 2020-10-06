@@ -25,7 +25,10 @@ include_directories(
 # Set up source files
 set(SOURCES
   src/Module.cpp
+  src/core/Curl.cpp
   src/core/httpCurl.cpp
+  src/core/smtpCurl.cpp
+  src/core/imapCurl.cpp
   src/core/git.cpp
   src/core/mySQL.cpp
 )
@@ -33,7 +36,10 @@ set(SOURCES
 set(HEADERS
   src/Module.hpp
   src/core/config.hpp
+  src/core/Curl.hpp
   src/core/httpCurl.hpp
+  src/core/smtpCurl.hpp
+  src/core/imapCurl.hpp
   src/core/git.hpp
   src/core/mySQL.hpp
 
@@ -72,15 +78,26 @@ set(LIBRARIES ${LIBRARIES}
   wldap32
   libz
   bcrypt
+  crypto
   crypt32
 
   # git2
   git2
+
+  # libmariadbclient
+  mariadbclient
+
+  # ssh
+  ssh
 )
 
 if(WIN32)
     set(LIBRARIES ${LIBRARIES}
         # Windows Libraries
+        ws2_32
+        secur32
+        wsock32
+        shlwapi
     )
 elseif(UNIX)
     set(LIBRARIES ${LIBRARIES}
@@ -130,6 +147,10 @@ endif()
 
 # TESTS
 add_subdirectory(src/tests/mysql-connect)
+add_subdirectory(src/tests/git-connect)
+add_subdirectory(src/tests/smtp-connect)
+add_subdirectory(src/tests/http-connect)
+add_subdirectory(src/tests/imap-connect)
 
 # Post build
 if(BUILD_SHARED_LIBS)

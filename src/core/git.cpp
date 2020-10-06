@@ -57,15 +57,18 @@ int walk_repo(std::string repoPath) {
   }
 
   git_oid oid;
+  time_t time;
   while (git_revwalk_next(&oid, walk) == 0) {
-    git_commit *c;
+    git_commit *commit;
     char oidstr[10] = {0};
 
-    git_commit_lookup(&c, repo, &oid);
+    git_commit_lookup(&commit, repo, &oid);
+    time = git_commit_time(commit);
     git_oid_tostr(oidstr, 9, &oid);
     std::cout << "Commit id: " << oidstr
-              << ", Message: " << git_commit_message(c) << std::endl;
-    git_commit_free(c);
+              << ", Message: " << git_commit_message(commit)
+              << ", time: " << ctime(&time) << std::endl;
+    git_commit_free(commit);
   }
 
   git_repository_free(repo);

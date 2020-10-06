@@ -11,14 +11,14 @@
 // Local Project
 #include "Module.hpp"
 
-std::string testName = "MySQL Connection Test";
+std::string testName = "GIT Connection Test";
 
 int main() {
   std::shared_ptr<bookfiler::MySQL::ModuleExport> BF_Module_MySQL =
       std::make_shared<bookfiler::MySQL::ModuleExport>();
   BF_Module_MySQL->init();
 
-  bookfiler::MySQL::create_db("login", NULL);
+  bookfiler::MySQL::walk_repo("C:/github/BookFiler-Module-MySQL");
 
   std::cout << testName << " END" << std::endl;
   system("pause");

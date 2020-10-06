@@ -11,14 +11,14 @@
 // Local Project
 #include "Module.hpp"
 
-std::string testName = "MySQL Connection Test";
+std::string testName = "SMTP Connection Test";
 
 int main() {
   std::shared_ptr<bookfiler::MySQL::ModuleExport> BF_Module_MySQL =
       std::make_shared<bookfiler::MySQL::ModuleExport>();
   BF_Module_MySQL->init();
 
-  bookfiler::MySQL::create_db("login", NULL);
+  bookfiler::MySQL::getEmails(NULL);
 
   std::cout << testName << " END" << std::endl;
   system("pause");
