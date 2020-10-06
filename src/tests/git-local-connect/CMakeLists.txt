@@ -1,4 +1,4 @@
-set(EXENAME git-connect)
+set(EXENAME git-local-connect)
 
 set(SOURCES_SUB ${SOURCES_SUB}
   main.cpp

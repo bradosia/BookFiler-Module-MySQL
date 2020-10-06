@@ -51,8 +51,20 @@
 namespace bookfiler {
 namespace MySQL {
 
-int ssh_tunnel(int localPort, std::string remoteHost, int remotePort);
-int create_db(std::string repoPath, rapidjson::Document settings);
+class Db {
+private:
+  MYSQL *con;
+
+public:
+  Db() { con = mysql_init(NULL); };
+  ~Db() {
+    if (con) {
+      mysql_close(con);
+    }
+  };
+  int open(std::shared_ptr<rapidjson::Document>);
+  int tableCreate();
+};
 
 } // namespace MySQL
 } // namespace bookfiler

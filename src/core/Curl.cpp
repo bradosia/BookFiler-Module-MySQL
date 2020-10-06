@@ -13,7 +13,7 @@
  * bookfiler - MySQL
  */
 namespace bookfiler {
-namespace MySQL {
+namespace curl {
 
 
 size_t writefunc(void *ptr, size_t size, size_t nmemb, std::string *s) {

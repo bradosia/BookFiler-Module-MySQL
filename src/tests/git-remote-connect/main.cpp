@@ -16,7 +16,7 @@ std::string readFile(std::fstream &fileStream);
 int readJson(std::string path,
              std::shared_ptr<rapidjson::Document> settingsDoc);
 
-std::string testName = "MySQL Connection Test";
+std::string testName = "GIT Connection Test";
 
 int main() {
   int rc;
@@ -26,18 +26,21 @@ int main() {
 
   std::shared_ptr<rapidjson::Document> settingsDoc =
       std::make_shared<rapidjson::Document>();
-  rc = readJson("mysql-connect.json", settingsDoc);
+  rc = readJson("git-remote-connect.json", settingsDoc);
   if (rc < 0) {
     return 0;
   }
 
-  bookfiler::MySQL::Db db;
-  rc = db.open(settingsDoc);
+  git_libgit2_init();
+  bookfiler::GIT::Repository repo;
+  rc = repo.openRemote(settingsDoc);
   if (rc < 0) {
-    std::cout << "database could not be opened" << std::endl;
+    std::cout << "repository could not be opened" << std::endl;
     return 0;
   }
-  db.tableCreate();
+  repo.walk();
+
+  git_libgit2_shutdown();
 
   std::cout << testName << " END" << std::endl;
   system("pause");

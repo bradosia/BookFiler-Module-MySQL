@@ -16,9 +16,9 @@
  * bookfiler - MySQL
  */
 namespace bookfiler {
-namespace MySQL {
+namespace IMAP {
 
-int getEmails(rapidjson::Document settings);
+int getEmails(std::shared_ptr<rapidjson::Document> settings);
 
 } // namespace MySQL
 } // namespace bookfiler

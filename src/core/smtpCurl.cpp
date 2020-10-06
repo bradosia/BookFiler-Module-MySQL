@@ -13,7 +13,7 @@
  * bookfiler - MySQL
  */
 namespace bookfiler {
-namespace MySQL {
+namespace SMTP {
 
 
 

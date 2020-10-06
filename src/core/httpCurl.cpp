@@ -13,7 +13,7 @@
  * bookfiler - MySQL
  */
 namespace bookfiler {
-namespace MySQL {
+namespace HTTP {
 
 #if HTTPS_CURL_ENABLE
 
@@ -25,8 +25,6 @@ rapidjson::Document HTTPS_GET_JSON(std::string URI) {
   rapidjson::Document resJSON_Doc;
 
   printf("HTTPS_GET_JSON called on: %s\n", URI.c_str());
-
-  curl_global_init(CURL_GLOBAL_DEFAULT);
 
   curl = curl_easy_init();
 
@@ -70,7 +68,7 @@ rapidjson::Document HTTPS_GET_JSON(std::string URI) {
 #endif
 
     /* setup callbacks */
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, bookfiler::curl::writefunc);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &bufferString);
     /* Perform the request, res will get the return code */
     res = curl_easy_perform(curl);
@@ -86,8 +84,6 @@ rapidjson::Document HTTPS_GET_JSON(std::string URI) {
     /* always cleanup */
     curl_easy_cleanup(curl);
   }
-
-  curl_global_cleanup();
 
   return resJSON_Doc;
 }

@@ -16,13 +16,13 @@
  * bookfiler - MySQL
  */
 namespace bookfiler {
-namespace MySQL {
+namespace HTTP {
 
-class HTTP {
+class Json {
 
 public:
-  HTTP(){};
-  ~HTTP(){};
+  Json(){};
+  ~Json(){};
 };
 
 #if HTTPS_CURL_ENABLE
@@ -38,7 +38,7 @@ void getSettingsFile(std::string settingsFileString,
                      std::string &outputFileString);
 #endif
 
-} // namespace MySQL
+} // namespace HTTP
 } // namespace bookfiler
 
 #endif

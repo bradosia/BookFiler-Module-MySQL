@@ -45,7 +45,7 @@
  * bookfiler - MySQL
  */
 namespace bookfiler {
-namespace MySQL {
+namespace curl {
 
 /* Writes data from HTTP request into a string buffer
  * @param ptr data address

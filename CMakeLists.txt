@@ -31,6 +31,7 @@ set(SOURCES
   src/core/imapCurl.cpp
   src/core/git.cpp
   src/core/mySQL.cpp
+  src/core/ssh.cpp
 )
 
 set(HEADERS
@@ -42,6 +43,7 @@ set(HEADERS
   src/core/imapCurl.hpp
   src/core/git.hpp
   src/core/mySQL.hpp
+  src/core/ssh.hpp
 
   include/BookFiler-Module-MySQL/Interface.hpp
 )
@@ -147,7 +149,8 @@ endif()
 
 # TESTS
 add_subdirectory(src/tests/mysql-connect)
-add_subdirectory(src/tests/git-connect)
+add_subdirectory(src/tests/git-local-connect)
+add_subdirectory(src/tests/git-remote-connect)
 add_subdirectory(src/tests/smtp-connect)
 add_subdirectory(src/tests/http-connect)
 add_subdirectory(src/tests/imap-connect)

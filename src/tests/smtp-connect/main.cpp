@@ -18,7 +18,11 @@ int main() {
       std::make_shared<bookfiler::MySQL::ModuleExport>();
   BF_Module_MySQL->init();
 
-  bookfiler::MySQL::getEmails(NULL);
+  curl_global_init(CURL_GLOBAL_DEFAULT);
+
+  //bookfiler::SMTP::getEmails(NULL);
+
+  curl_global_cleanup();
 
   std::cout << testName << " END" << std::endl;
   system("pause");

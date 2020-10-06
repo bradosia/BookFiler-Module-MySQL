@@ -6,8 +6,8 @@
  * @brief mySQL, SQLite3, and HTTP implementation
  */
 
-#ifndef BOOKFILER_MODULE_MYSQL_GIT_H
-#define BOOKFILER_MODULE_MYSQL_GIT_H
+#ifndef BOOKFILER_MODULE_MYSQL_MYSQL_H
+#define BOOKFILER_MODULE_MYSQL_MYSQL_H
 
 // config
 #include "config.hpp"
@@ -33,35 +33,22 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
-/* libgit2
- * License: GPL2
+/* libssh
+ * Version: 0.9.4-1
+ * License: LGPL
  */
-#include "git2.h"
+#include <libssh/libssh.h>
 
 /*
  * bookfiler - MySQL
  */
 namespace bookfiler {
-namespace GIT {
+namespace SSH {
 
-class Repository {
-private:
-  git_repository *repo;
+int tunnel(rapidjson::Document settings);
 
-public:
-  Repository() { repo = nullptr; };
-  ~Repository() {
-    if (repo) {
-      git_repository_free(repo);
-    }
-  };
-  int openRemote(std::shared_ptr<rapidjson::Document>);
-  int openLocal(std::shared_ptr<rapidjson::Document>);
-  int walk();
-};
-
-} // namespace GIT
+} // namespace MySQL
 } // namespace bookfiler
 
 #endif
-// end BOOKFILER_MODULE_MYSQL_GIT_H
+// end BOOKFILER_MODULE_MYSQL_MYSQL_H
