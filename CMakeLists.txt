@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 3.4)
 set(PROJECT_NAME BookFiler-Module-MySQL)
 project(${PROJECT_NAME} VERSION 1.0.0 LANGUAGES CXX)
 set(RELEASE_DIR "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/")
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${RELEASE_DIR})
+set(INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${RELEASE_DIR})
 
 option(BUILD_SHARED_LIBS "Build shared library" ON)
 option(BUILD_STATIC_LIBS "Build static library" OFF)
@@ -30,27 +31,13 @@ link_directories(
 # Set up source files
 set(SOURCES
   src/Module.cpp
-  src/core/Curl.cpp
-  src/core/httpCurl.cpp
-  src/core/smtpCurl.cpp
-  src/core/imapCurl.cpp
-  src/core/imapMailio.cpp
-  src/core/git.cpp
   src/core/mySQL.cpp
-  src/core/ssh.cpp
 )
 
 set(HEADERS
   src/Module.hpp
   src/core/config.hpp
-  src/core/Curl.hpp
-  src/core/httpCurl.hpp
-  src/core/smtpCurl.hpp
-  src/core/imapCurl.hpp
-  src/core/imapMailio.hpp
-  src/core/git.hpp
   src/core/mySQL.hpp
-  src/core/ssh.hpp
 
   include/BookFiler-Module-MySQL/Interface.hpp
 )
@@ -64,43 +51,21 @@ set(STATIC_COMPILE_DEFINITIONS
 )
 
 set(LIBRARIES ${LIBRARIES}
-  # sqlite 3
-  sqlite3
-
   # Boost
   Boost::system
   Boost::filesystem
 
-  # curl
-  curl
-  nghttp2
-  psl.dll
-  idn2
-  ssl
-  crypto
-  cares
-  ssh2
-  brotlidec-static
-  brotlienc-static
-  brotlicommon-static
-  unistring
-  wldap32
-  libz
-  bcrypt
-  crypto
-  crypt32
-
-  # git2
-  git2
-
   # libmariadbclient
   mariadbclient
 
-  # ssh
-  ssh
+  # ssl
+  ssl
+  crypto
+  crypt32
 
-  # mailio
-  mailio
+  # zlib
+  z
+  libz
 )
 
 if(WIN32)
@@ -127,7 +92,7 @@ include(CMakePackageConfigHelpers)
 if(BUILD_SHARED_LIBS)
   set(lib_shared_name ${PROJECT_NAME}-LibShared)
   message( STATUS "-- Building ${lib_shared_name}" )
-  add_library(${lib_shared_name} SHARED  ${SOURCES} ${HEADERS})
+  add_library(${lib_shared_name} SHARED ${SOURCES} ${HEADERS})
   set_property(TARGET ${lib_shared_name} PROPERTY VERSION "${PROJECT_VERSION}")
   target_include_directories(${lib_shared_name} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
@@ -144,7 +109,7 @@ endif()
 if(BUILD_STATIC_LIBS)
   set(lib_name ${PROJECT_NAME}-Lib)
   message( STATUS "-- Building ${lib_name}" )
-  add_library(${lib_name} STATIC  ${SOURCES} ${HEADERS})
+  add_library(${lib_name} STATIC ${SOURCES} ${HEADERS})
   set_property(TARGET ${lib_name} PROPERTY VERSION "${PROJECT_VERSION}")
   target_include_directories(${lib_name} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
@@ -158,40 +123,41 @@ if(BUILD_STATIC_LIBS)
 endif()
 
 # TESTS
-add_subdirectory(src/tests/mysql-connect)
-add_subdirectory(src/tests/git-local-connect)
-add_subdirectory(src/tests/git-remote-connect)
-add_subdirectory(src/tests/smtp-connect)
-add_subdirectory(src/tests/http-connect)
-add_subdirectory(src/tests/imap-curl-connect)
-add_subdirectory(src/tests/imap-mailio-connect)
+add_subdirectory(src_example/mysql-connect)
 
 # Post build
 if(BUILD_SHARED_LIBS)
-    add_custom_command(TARGET ${lib_shared_name} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/modules/")
-    add_custom_command(TARGET ${lib_shared_name} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${lib_shared_name}> "${CMAKE_BINARY_DIR}/modules/")
+  add_custom_command(TARGET ${lib_shared_name} POST_BUILD
+    # Make a release directory without all the cmake extras.
+    # This directory can easily be archived and distributed.
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${RELEASE_DIR}"
+    # Create release sub-folders
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${RELEASE_DIR}/modules/"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${RELEASE_DIR}/resources/"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${lib_shared_name}> "${RELEASE_DIR}/modules/"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/resources/" "${RELEASE_DIR}/resources"
+    COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/settings/settings.json" "${RELEASE_DIR}/settings.json"
+  )
 endif(BUILD_SHARED_LIBS)
 
 # Installation
 if(BUILD_SHARED_LIBS)
   message(STATUS "INSTALL: ${lib_shared_name} TO root=${CMAKE_BINARY_DIR} and current=${CMAKE_CURRENT_BINARY_DIR}")
   install(TARGETS ${lib_shared_name}
-    RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/modules"
-    ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/modules"
-    LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/modules"
+    RUNTIME DESTINATION "${INSTALL_DIR}/modules"
+    ARCHIVE DESTINATION "${INSTALL_DIR}/modules"
+    LIBRARY DESTINATION "${INSTALL_DIR}/modules"
   )
 endif(BUILD_SHARED_LIBS)
 
 if(BUILD_STATIC_LIBS)
   install(TARGETS ${lib_name} EXPORT ${lib_name}_TARGETS
-    RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/lib"
-    ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/lib"
-    LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/lib"
+    RUNTIME DESTINATION "${INSTALL_DIR}/lib"
+    ARCHIVE DESTINATION "${INSTALL_DIR}/lib"
+    LIBRARY DESTINATION "${INSTALL_DIR}/lib"
   )
 endif(BUILD_STATIC_LIBS)
 
 install(FILES ${HEADERS}
-  DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/headers"
+  DESTINATION "${INSTALL_DIR}/headers"
 COMPONENT Headers)

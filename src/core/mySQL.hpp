@@ -39,11 +39,8 @@
  */
 #include <mariadb/mysql.h>
 
-/* libssh
- * Version: 0.9.4-1
- * License: LGPL
- */
-#include <libssh/libssh.h>
+// Local Project
+#include <BookFiler-Module-MySQL/Interface.hpp>
 
 /*
  * bookfiler - MySQL
@@ -51,18 +48,18 @@
 namespace bookfiler {
 namespace MySQL {
 
-class Db {
+class ConnectionImpl : public Connection {
 private:
   MYSQL *con;
+  std::shared_ptr<rapidjson::Value> settingsDoc;
+  std::shared_ptr<rapidjson::Value> accountsDoc;
 
 public:
-  Db() { con = mysql_init(NULL); };
-  ~Db() {
-    if (con) {
-      mysql_close(con);
-    }
-  };
-  int open(std::shared_ptr<rapidjson::Document>);
+  ConnectionImpl();
+  ~ConnectionImpl();
+  int setAccountsDoc(std::shared_ptr<rapidjson::Value>);
+  int setSettingsDoc(std::shared_ptr<rapidjson::Value>);
+  int open();
   int tableCreate();
 };
 

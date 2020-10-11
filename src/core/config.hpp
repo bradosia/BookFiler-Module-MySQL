@@ -9,10 +9,18 @@
 #ifndef BOOKFILER_MODULE_MYSQL_CONFIG_H
 #define BOOKFILER_MODULE_MYSQL_CONFIG_H
 
-#define CURL_SKIP_PEER_VERIFICATION 1
-#define CURL_SKIP_HOSTNAME_VERIFICATION 1
-#define HTTPS_GET_JSON_DEBUG 0
-#define HTTPS_GET_JSON_ENABLE 1
-#define HTTPS_CURL_ENABLE 1
+#define MODULE_EXPORT_SET_SETTINGS_DEBUG 1
+#define MODULE_EXPORT_SET_ACCOUNTS_DEBUG 1
+
+#include <string>
+
+namespace bookfiler {
+namespace MySQL {
+
+static std::string moduleName = "BookFiler Module MySQL";
+static std::string moduleCode = "bookfiler::MySQL";
+
+} // namespace MySQL
+} // namespace bookfiler
 
 #endif // BOOKFILER_MODULE_MYSQL_CONFIG_H

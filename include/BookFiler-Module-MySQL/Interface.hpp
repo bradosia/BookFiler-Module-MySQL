@@ -28,21 +28,30 @@
 namespace bookfiler {
 namespace MySQL {
 
+class Connection {
+public:
+  Connection(){};
+  ~Connection(){};
+  virtual int open() = 0;
+  virtual int tableCreate() = 0;
+};
+
 class ModuleInterface {
 public:
   /* module typical methods
    * init, registerSettings
    */
-  virtual void init() = 0;
+  virtual int init() = 0;
   /* registerSettings
    * @brief Registers a map of callbacks for handling data from the main
    * application settings file.
    */
-  virtual void registerSettings(
+  virtual int registerSettings(
       std::shared_ptr<rapidjson::Document>,
       std::shared_ptr<std::unordered_map<
           std::string,
           std::function<void(std::shared_ptr<rapidjson::Document>)>>>) = 0;
+  virtual std::shared_ptr<Connection> newConnection() = 0;
 };
 
 } // namespace MySQL

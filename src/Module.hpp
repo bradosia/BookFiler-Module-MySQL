@@ -38,13 +38,8 @@
 #include <rapidjson/writer.h>
 
 // Local Project
-#include "BookFiler-Module-MySQL/Interface.hpp"
-#include "core/git.hpp"
-#include "core/httpCurl.hpp"
-#include "core/imapCurl.hpp"
-#include "core/imapMailio.hpp"
 #include "core/mySQL.hpp"
-#include "core/smtpCurl.hpp"
+#include <BookFiler-Module-MySQL/Interface.hpp>
 
 /*
  * bookfiler - MySQL
@@ -52,14 +47,16 @@
 namespace bookfiler {
 namespace MySQL {
 
-std::string moduleName = "BookFiler Module MySQL";
-
 /*
  * This widget uses the MVC design pattern.
  * This is the controller, the view is a QT widget, and the model is the API
  * storage
  */
 class ModuleExport : public ModuleInterface {
+private:
+  std::shared_ptr<rapidjson::Value> settingsDoc;
+  std::shared_ptr<rapidjson::Value> accountsDoc;
+
 public:
   ModuleExport(){};
   ~ModuleExport(){};
@@ -67,23 +64,25 @@ public:
   /* module typical methods
    * init, registerSettings
    */
-  void init() { std::cout << moduleName << ": init()" << std::endl; }
+  int init();
   /* registerSettings
    * @brief Registers a map of callbacks for handling data from the main
    * application settings file.
    */
-  void registerSettings(
-      std::shared_ptr<rapidjson::Document> moduleRequest,
+  int registerSettings(
+      std::shared_ptr<rapidjson::Document>,
       std::shared_ptr<std::unordered_map<
           std::string,
           std::function<void(std::shared_ptr<rapidjson::Document>)>>>);
-  void setSettings(std::shared_ptr<rapidjson::Value> data);
+  int setAccounts(std::shared_ptr<rapidjson::Value>);
+  int setSettings(std::shared_ptr<rapidjson::Value>);
+  std::shared_ptr<Connection> newConnection();
 };
 
 // Exporting `my_namespace::module` variable with alias name `module`
 // (Has the same effect as `BOOST_DLL_ALIAS(my_namespace::module, module)`)
-// extern "C" BOOST_SYMBOL_EXPORT ModuleExport mySQLModule;
-// ModuleExport mySQLModule;
+extern "C" BOOST_SYMBOL_EXPORT ModuleExport mySQLModule;
+ModuleExport mySQLModule;
 
 } // namespace MySQL
 } // namespace bookfiler
