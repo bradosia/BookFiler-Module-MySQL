@@ -21,13 +21,15 @@ ConnectionImpl::~ConnectionImpl() {
     mysql_close(con);
   }
 };
-int ConnectionImpl::setAccountsDoc(
-    std::shared_ptr<rapidjson::Value> accountsDoc_) {
-  accountsDoc = accountsDoc_;
-}
 int ConnectionImpl::setSettingsDoc(
     std::shared_ptr<rapidjson::Value> settingsDoc_) {
   settingsDoc = settingsDoc_;
+  return 0;
+}
+int ConnectionImpl::setAccountsDoc(
+    std::shared_ptr<rapidjson::Value> accountsDoc_) {
+  accountsDoc = accountsDoc_;
+  return 0;
 }
 int ConnectionImpl::open() {
   int port;

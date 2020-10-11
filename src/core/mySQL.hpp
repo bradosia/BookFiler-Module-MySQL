@@ -57,8 +57,8 @@ private:
 public:
   ConnectionImpl();
   ~ConnectionImpl();
-  int setAccountsDoc(std::shared_ptr<rapidjson::Value>);
   int setSettingsDoc(std::shared_ptr<rapidjson::Value>);
+  int setAccountsDoc(std::shared_ptr<rapidjson::Value>);
   int open();
   int tableCreate();
 };

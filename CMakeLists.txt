@@ -130,11 +130,11 @@ if(BUILD_SHARED_LIBS)
     # This directory can easily be archived and distributed.
     COMMAND ${CMAKE_COMMAND} -E make_directory "${RELEASE_DIR}"
     # Create release sub-folders
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${RELEASE_DIR}/modules/"
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${RELEASE_DIR}/resources/"
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${lib_shared_name}> "${RELEASE_DIR}/modules/"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/resources/" "${RELEASE_DIR}/resources"
-    COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/settings/settings.json" "${RELEASE_DIR}/settings.json"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${RELEASE_DIR}modules/"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${RELEASE_DIR}resources/"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${lib_shared_name}> "${RELEASE_DIR}modules/"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/resources/" "${RELEASE_DIR}resources"
+    COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/settings/settings.json" "${RELEASE_DIR}settings.json"
   )
 endif(BUILD_SHARED_LIBS)
 
