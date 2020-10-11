@@ -21,11 +21,9 @@ find_package(Boost 1.56 REQUIRED COMPONENTS
 include_directories(
   include
   third_party/rapidjson/include
-  third_party/mailio/include
 )
 
 link_directories(
-  third_party/mailio/bin
 )
 
 # Set up source files

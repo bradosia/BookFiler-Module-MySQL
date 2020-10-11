@@ -8,7 +8,7 @@ set(HEADERS_SUB
   src/Module.hpp
   src/core/config.hpp
 
-  include/BookFiler-Module-MySQL/Interface.hpp
+  BookFiler-Module-MySQL/Interface.hpp
 )
 
 include_directories(
